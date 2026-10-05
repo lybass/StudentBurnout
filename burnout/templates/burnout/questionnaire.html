@@ -1,0 +1,52 @@
+{% extends "burnout/base.html" %}
+{% block title %}Questionnaire — StudentBurnout{% endblock %}
+{% block content %}
+<div class="container page">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-7">
+      {% include "burnout/_etapes.html" with etape=1 %}
+
+      <div class="page-head">
+        <h1>Questionnaire d'évaluation</h1>
+        <p>Notez chaque affirmation de 1 à 5 selon ce que vous ressentez en ce moment. Il n'y a pas de bonne ou de mauvaise réponse.</p>
+      </div>
+
+      <form method="post" novalidate>
+        {% csrf_token %}
+
+        <div class="sb-card mb-4">
+          <h2 class="form-section-title"><span class="num">1</span> État général</h2>
+          {% for field in form %}{% if field.name in "stress,fatigue,motivation,concentration,sentiment_debordement" %}
+            {% include "burnout/_champ_echelle.html" %}
+          {% endif %}{% endfor %}
+        </div>
+
+        <div class="sb-card mb-4">
+          <h2 class="form-section-title"><span class="num">2</span> Sommeil et récupération</h2>
+          {% for field in form %}{% if field.name == "sommeil" %}
+            {% include "burnout/_champ_echelle.html" %}
+          {% endif %}{% endfor %}
+        </div>
+
+        <div class="sb-card mb-4">
+          <h2 class="form-section-title"><span class="num">3</span> Études</h2>
+          {% for field in form %}{% if field.name == "charge_mentale" %}
+            {% include "burnout/_champ_echelle.html" %}
+          {% endif %}{% endfor %}
+          <p class="small text-muted mt-3 mb-0">Les détails de votre charge de travail (heures, devoirs, projets…) vous seront demandés à l'étape suivante.</p>
+        </div>
+
+        <div class="sb-card mb-4">
+          <h2 class="form-section-title"><span class="num">4</span> Équilibre</h2>
+          {% for field in form %}{% if field.name in "equilibre_vie_etudes,isolement,satisfaction_etudes" %}
+            {% include "burnout/_champ_echelle.html" %}
+          {% endif %}{% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg w-100">Continuer <i class="bi bi-arrow-right"></i></button>
+        <p class="small text-muted text-center mt-3 mb-0"><i class="bi bi-lock"></i> Ces informations sont confidentielles et ne servent qu'à produire votre estimation.</p>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

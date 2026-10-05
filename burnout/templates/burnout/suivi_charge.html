@@ -1,0 +1,82 @@
+{% extends "burnout/base.html" %}
+{% block title %}Charge de travail — StudentBurnout{% endblock %}
+{% block content %}
+<div class="container page">
+  <div class="page-head">
+    <h1>Suivi de ma charge de travail</h1>
+    <p>Notez votre rythme régulièrement : les moyennes et l'historique vous aident à repérer une dérive.</p>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-5">
+      <div class="sb-card">
+        <h2 class="h5 mb-3">Renseigner ma charge actuelle</h2>
+        <form method="post" novalidate>
+          {% csrf_token %}
+          {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+          {% for field in form %}
+            <div class="mb-3">
+              <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field }}
+              {% for error in field.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+            </div>
+          {% endfor %}
+          <button type="submit" class="btn btn-primary w-100 mt-2">Enregistrer</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="col-lg-7">
+      <div class="row g-3 mb-4">
+        <div class="col-4">
+          <div class="card stat">
+            <div class="label"><i class="bi bi-book"></i> Étude</div>
+            <div class="value {% if not moyennes.moy_etude %}empty{% endif %}">{% if moyennes.moy_etude %}{{ moyennes.moy_etude|floatformat:1 }}<small> h</small>{% else %}—{% endif %}</div>
+            <div class="small text-muted mt-1">moyenne par jour</div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="card stat">
+            <div class="label"><i class="bi bi-moon-stars"></i> Sommeil</div>
+            <div class="value {% if not moyennes.moy_sommeil %}empty{% endif %}">{% if moyennes.moy_sommeil %}{{ moyennes.moy_sommeil|floatformat:1 }}<small> h</small>{% else %}—{% endif %}</div>
+            <div class="small text-muted mt-1">moyenne par jour</div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="card stat">
+            <div class="label"><i class="bi bi-cup-hot"></i> Repos</div>
+            <div class="value {% if not moyennes.moy_repos %}empty{% endif %}">{% if moyennes.moy_repos %}{{ moyennes.moy_repos|floatformat:1 }}<small> h</small>{% else %}—{% endif %}</div>
+            <div class="small text-muted mt-1">moyenne par jour</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card table-wrap">
+        <div class="px-4 pt-4 pb-3"><h2 class="h5 mb-0">Dernières saisies</h2></div>
+        {% if charges %}
+          <div class="table-responsive">
+            <table class="table sb-table">
+              <thead><tr><th>Date</th><th>Étude</th><th>Sommeil</th><th>Repos</th><th>Devoirs</th><th>Projets</th><th>Examens</th></tr></thead>
+              <tbody>
+                {% for c in charges %}
+                <tr>
+                  <td>{{ c.date_creation|date:"d/m" }}</td>
+                  <td>{{ c.heures_etude_jour }} h</td>
+                  <td>{{ c.heures_sommeil_jour }} h</td>
+                  <td>{{ c.temps_repos_jour }} h</td>
+                  <td>{{ c.nombre_devoirs }}</td>
+                  <td>{{ c.nombre_projets }}</td>
+                  <td>{{ c.nombre_examens }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <p class="text-muted px-4 pb-4 mb-0">Aucune saisie pour le moment. Remplissez le formulaire pour enregistrer votre première charge.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

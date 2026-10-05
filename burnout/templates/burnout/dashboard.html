@@ -1,0 +1,168 @@
+{% extends "burnout/base.html" %}
+{% block title %}Tableau de bord — StudentBurnout{% endblock %}
+{% block content %}
+<div class="container page">
+
+  <div class="page-head d-flex flex-wrap justify-content-between align-items-end gap-3">
+    <div>
+      <h1>Bonjour {{ etudiant.prenom }}</h1>
+      <p>Voici où vous en êtes. Les courbes se précisent à mesure que vous ajoutez des évaluations.</p>
+    </div>
+    <a href="{% url 'burnout:questionnaire' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nouvelle évaluation</a>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-lg-3 col-6">
+      <div class="card stat">
+        <div class="label"><i class="bi bi-activity"></i> Dernier niveau</div>
+        {% if dernier_resultat %}
+          <div class="mt-3"><span class="badge-niveau lg badge-{{ dernier_resultat.niveau_risque|lower }}">{{ dernier_resultat.get_niveau_risque_display }}</span></div>
+        {% else %}
+          <div class="value empty">—</div>
+        {% endif %}
+      </div>
+    </div>
+    <div class="col-lg-3 col-6">
+      <div class="card stat">
+        <div class="label"><i class="bi bi-speedometer2"></i> Dernier score</div>
+        {% if dernier_resultat %}
+          <div class="value">{{ dernier_resultat.score_risque }}<small>%</small></div>
+        {% else %}
+          <div class="value empty">—</div>
+        {% endif %}
+      </div>
+    </div>
+    <div class="col-lg-3 col-6">
+      <div class="card stat">
+        <div class="label"><i class="bi bi-book"></i> Étude par jour</div>
+        {% if derniere_charge %}
+          <div class="value">{{ derniere_charge.heures_etude_jour }}<small> h</small></div>
+        {% else %}
+          <div class="value empty">—</div>
+        {% endif %}
+      </div>
+    </div>
+    <div class="col-lg-3 col-6">
+      <div class="card stat">
+        <div class="label"><i class="bi bi-moon-stars"></i> Sommeil par jour</div>
+        {% if derniere_charge %}
+          <div class="value">{{ derniere_charge.heures_sommeil_jour }}<small> h</small></div>
+        {% else %}
+          <div class="value empty">—</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  {% if not dernier_resultat %}
+    <div class="card empty-state">
+      <div class="ico"><i class="bi bi-clipboard2-pulse"></i></div>
+      <h2>Aucune évaluation pour l'instant</h2>
+      <p>Répondez au questionnaire pour obtenir votre première estimation et voir apparaître vos courbes ici.</p>
+      <div><a href="{% url 'burnout:questionnaire' %}" class="btn btn-primary btn-lg">Commencer l'évaluation</a></div>
+    </div>
+  {% else %}
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="card chart-card">
+          <h2>Évolution du score de risque</h2>
+          <div class="chart-box"><canvas id="chartRisque"></canvas></div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card chart-card">
+          <h2>Étude, sommeil et repos</h2>
+          <div class="chart-box"><canvas id="chartCharge"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex flex-wrap gap-2 mt-4">
+      <a href="{% url 'burnout:resultat' dernier_resultat.pk %}" class="btn btn-outline-secondary">Voir le dernier résultat</a>
+      <a href="{% url 'burnout:historique' %}" class="btn btn-outline-secondary">Historique complet</a>
+      <a href="{% url 'burnout:suivi_charge_travail' %}" class="btn btn-outline-secondary">Mettre à jour ma charge</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+const labelsRisque = {{ labels_risque|safe }};
+const scoresRisque = {{ scores_risque|safe }};
+const labelsCharge = {{ labels_charge|safe }};
+const heuresEtude = {{ heures_etude|safe }};
+const heuresSommeil = {{ heures_sommeil|safe }};
+const heuresRepos = {{ heures_repos|safe }};
+
+if (window.Chart) {
+  Chart.defaults.font.family = "'Figtree', system-ui, sans-serif";
+  Chart.defaults.font.size = 12;
+  Chart.defaults.color = '#5f6f7a';
+  Chart.defaults.borderColor = '#e6ecea';
+
+  const base = {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, padding: 16 } },
+      tooltip: {
+        backgroundColor: '#14213a', padding: 10, cornerRadius: 8,
+        titleFont: { weight: '600' }, boxPadding: 4
+      }
+    },
+    scales: {
+      x: { grid: { display: false } },
+      y: { grid: { color: '#eef2f1' }, border: { display: false } }
+    }
+  };
+
+  const line = (label, data, color, fill) => ({
+    label, data, borderColor: color, backgroundColor: fill || color,
+    tension: 0.35, borderWidth: 2.5, pointRadius: 4, pointHoverRadius: 6,
+    pointBackgroundColor: color, pointBorderColor: '#fff', pointBorderWidth: 2, fill: !!fill
+  });
+
+  const elRisque = document.getElementById('chartRisque');
+  if (elRisque) {
+    const ctx = elRisque.getContext('2d');
+    const grad = ctx.createLinearGradient(0, 0, 0, 290);
+    grad.addColorStop(0, 'rgba(14,107,99,.22)');
+    grad.addColorStop(1, 'rgba(14,107,99,0)');
+    new Chart(elRisque, {
+      type: 'line',
+      data: { labels: labelsRisque, datasets: [line('Score de risque (%)', scoresRisque, '#0e6b63', grad)] },
+      options: {
+        ...base,
+        plugins: { ...base.plugins, legend: { display: false } },
+        scales: {
+          ...base.scales,
+          y: { ...base.scales.y, min: 0, max: 100, ticks: { callback: v => v + '%' } }
+        }
+      }
+    });
+  }
+
+  const elCharge = document.getElementById('chartCharge');
+  if (elCharge) {
+    new Chart(elCharge, {
+      type: 'line',
+      data: {
+        labels: labelsCharge,
+        datasets: [
+          line('Étude (h/j)', heuresEtude, '#c77a0a'),
+          line('Sommeil (h/j)', heuresSommeil, '#14213a'),
+          line('Repos (h/j)', heuresRepos, '#2c8a58')
+        ]
+      },
+      options: {
+        ...base,
+        scales: { ...base.scales, y: { ...base.scales.y, beginAtZero: true, ticks: { callback: v => v + ' h' } } }
+      }
+    });
+  }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "burnout/base.html" %}
+{% block title %}À propos — StudentBurnout{% endblock %}
+{% block content %}
+<div class="container page">
+  <div class="row g-5">
+    <div class="col-lg-7">
+      <div class="page-head">
+        <h1>À propos de StudentBurnout</h1>
+      </div>
+      <p class="fs-5">
+        StudentBurnout est un projet académique de Master, réalisé dans le cadre du programme
+        Ingénierie Logicielle et Intelligence Artificielle (MILIA). Il illustre l'intégration d'un
+        pipeline de Machine Learning au cœur d'une application web Django.
+      </p>
+
+      <h2 class="h4 mt-5 mb-3">Ce que fait l'application</h2>
+      <ul class="check-list">
+        <li><i class="bi bi-check2-circle"></i><span>Recueille des indicateurs déclaratifs sur l'état général et la charge de travail de l'étudiant.</span></li>
+        <li><i class="bi bi-check2-circle"></i><span>Estime, à l'aide d'un modèle Random Forest, un niveau de risque : faible, modéré ou élevé.</span></li>
+        <li><i class="bi bi-check2-circle"></i><span>Présente les principaux facteurs associés à l'estimation.</span></li>
+        <li><i class="bi bi-check2-circle"></i><span>Propose des recommandations générales et prudentes.</span></li>
+        <li><i class="bi bi-check2-circle"></i><span>Permet de suivre l'évolution des résultats dans le temps.</span></li>
+      </ul>
+    </div>
+    <div class="col-lg-5">
+      <div class="notice">
+        <i class="bi bi-exclamation-triangle"></i>
+        <div>
+          <strong>À retenir.</strong> Les données d'entraînement du modèle sont synthétiques et générées
+          à des fins pédagogiques. Les résultats sont des estimations indicatives et ne constituent en
+          aucun cas un diagnostic médical.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

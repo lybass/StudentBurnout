@@ -1,0 +1,5 @@
+<ol class="parcours" aria-label="Progression de l'évaluation">
+  <li class="{% if etape > 1 %}done{% elif etape == 1 %}current{% endif %}"><span class="pastille">{% if etape > 1 %}<i class="bi bi-check-lg"></i>{% else %}1{% endif %}</span><span>Questionnaire</span></li>
+  <li class="{% if etape > 2 %}done{% elif etape == 2 %}current{% endif %}"><span class="pastille">{% if etape > 2 %}<i class="bi bi-check-lg"></i>{% else %}2{% endif %}</span><span>Charge de travail</span></li>
+  <li class="{% if etape == 3 %}current{% endif %}"><span class="pastille">3</span><span>Résultat</span></li>
+</ol>

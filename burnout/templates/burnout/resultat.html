@@ -1,0 +1,63 @@
+{% extends "burnout/base.html" %}
+{% block title %}Résultat — StudentBurnout{% endblock %}
+{% block content %}
+<div class="container page">
+  <div class="row justify-content-center">
+    <div class="col-lg-7 col-xl-6">
+      {% include "burnout/_etapes.html" with etape=3 %}
+
+      <div class="card result-card niveau-{{ resultat.niveau_risque|lower }} mb-4">
+        <h1 class="h6 text-muted mb-3">Votre estimation du {{ resultat.date_creation|date:"d/m/Y" }}</h1>
+        <div class="gauge mb-3">
+          <svg viewBox="0 0 200 118" role="img" aria-label="Score de risque : {{ resultat.score_risque }} %">
+            <path class="track" d="M 20 100 A 80 80 0 0 1 180 100"/>
+            <path class="value niveau-{{ resultat.niveau_risque|lower }}-c" style="--score: {{ resultat.score_risque|stringformat:'.1f' }}" d="M 20 100 A 80 80 0 0 1 180 100"/>
+          </svg>
+          <div class="gauge-readout">
+            <div class="num">{{ resultat.score_risque }}<small>%</small></div>
+            <div class="cap">Score de risque indicatif</div>
+          </div>
+        </div>
+        <div>
+          <span class="badge-niveau lg badge-{{ resultat.niveau_risque|lower }}">
+            {% if resultat.niveau_risque == "FAIBLE" %}<i class="bi bi-check-circle"></i>
+            {% elif resultat.niveau_risque == "MODERE" %}<i class="bi bi-exclamation-triangle"></i>
+            {% else %}<i class="bi bi-exclamation-octagon"></i>{% endif %}
+            Risque {{ resultat.get_niveau_risque_display|lower }}
+          </span>
+        </div>
+        <p class="text-muted small mt-3 mb-0">Probabilité associée à cette estimation : {{ resultat.probabilite }}%</p>
+      </div>
+
+      <div class="sb-card mb-4">
+        <h2 class="h5 mb-3">Principaux indicateurs identifiés</h2>
+        {% if resultat.facteurs_liste %}
+          <ul class="check-list indicateurs">
+            {% for facteur in resultat.facteurs_liste %}
+              <li><i class="bi bi-arrow-right-circle"></i><span>{{ facteur }}</span></li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="text-muted mb-0">Aucun facteur particulièrement défavorable n'a été identifié.</p>
+        {% endif %}
+      </div>
+
+      <div class="notice mb-4">
+        <i class="bi bi-info-circle"></i>
+        <div>Cette estimation est indicative et ne constitue pas un diagnostic médical.</div>
+      </div>
+
+      <div class="d-grid gap-2">
+        <a href="{% url 'burnout:recommandations' resultat.pk %}" class="btn btn-primary btn-lg">
+          <i class="bi bi-lightbulb"></i> Voir mes recommandations
+        </a>
+        <div class="d-flex flex-wrap gap-2">
+          <a href="{% url 'burnout:dashboard' %}" class="btn btn-outline-secondary flex-fill">Tableau de bord</a>
+          <a href="{% url 'burnout:historique' %}" class="btn btn-outline-secondary flex-fill">Historique</a>
+          <a href="{% url 'burnout:questionnaire' %}" class="btn btn-outline-secondary flex-fill">Refaire l'évaluation</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

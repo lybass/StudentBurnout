@@ -1,0 +1,48 @@
+{
+  "accuracy": 0.49166666666666664,
+  "precision_macro": 0.472217967030313,
+  "recall_macro": 0.48988095238095236,
+  "f1_macro": 0.47848121572371966,
+  "confusion_matrix": [
+    [
+      33,
+      11,
+      16
+    ],
+    [
+      6,
+      62,
+      28
+    ],
+    [
+      31,
+      30,
+      23
+    ]
+  ],
+  "labels": [
+    "ELEVE",
+    "FAIBLE",
+    "MODERE"
+  ],
+  "feature_importances": {
+    "stress": 0.058184639112611736,
+    "fatigue": 0.07531701214798325,
+    "motivation": 0.02815858459935558,
+    "concentration": 0.02853270531604859,
+    "sommeil": 0.03909181806194227,
+    "charge_mentale": 0.08264767923581726,
+    "sentiment_debordement": 0.09673246368272741,
+    "equilibre_vie_etudes": 0.03640755173680114,
+    "heures_cours_semaine": 0.10554225563750343,
+    "heures_etude_jour": 0.1073145039457679,
+    "heures_sommeil_jour": 0.0896128111590767,
+    "nombre_devoirs": 0.042863943129732254,
+    "nombre_projets": 0.034505606740895124,
+    "nombre_examens": 0.028813935336764452,
+    "nombre_echeances_semaine": 0.06006176486918058,
+    "temps_repos_jour": 0.08621272528779243
+  },
+  "n_train": 960,
+  "n_test": 240
+}

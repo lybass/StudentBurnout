@@ -1,0 +1,15 @@
+<div class="echelle-field">
+  <label class="form-label mb-0">{{ field.label }}</label>
+  {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+  <div class="echelle-options" role="radiogroup" aria-label="{{ field.label }}">
+    {% for radio in field %}{% if radio.data.value != "" %}
+      <div>
+        <input type="radio" class="btn-check" name="{{ radio.data.name }}" id="{{ radio.id_for_label }}"
+               value="{{ radio.data.value }}" autocomplete="off"
+               {% if radio.data.selected %}checked{% endif %} required>
+        <label class="scale-opt" for="{{ radio.id_for_label }}" title="{{ radio.data.label }}">{{ radio.data.value }}</label>
+      </div>
+    {% endif %}{% endfor %}
+  </div>
+  {% for error in field.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+</div>

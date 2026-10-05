@@ -1,0 +1,122 @@
+{% extends "burnout/base.html" %}
+{% block title %}StudentBurnout — Prévenir l'épuisement étudiant{% endblock %}
+{% block content %}
+
+<section class="hero">
+  <div class="container py-5">
+    <div class="row align-items-center g-5 py-lg-4">
+      <div class="col-lg-7">
+        <h1>Repérez l'épuisement avant qu'il ne s'installe.</h1>
+        <p class="lead mb-4">
+          StudentBurnout croise vos habitudes d'étude, votre sommeil et votre ressenti pour estimer
+          votre niveau de risque, puis vous propose des pistes concrètes pour alléger votre charge.
+        </p>
+        <div class="d-flex gap-3 flex-wrap mb-3">
+          {% if user.is_authenticated %}
+            <a href="{% url 'burnout:questionnaire' %}" class="btn btn-light btn-lg">Commencer l'évaluation</a>
+            <a href="{% url 'burnout:dashboard' %}" class="btn btn-outline-light btn-lg">Mon tableau de bord</a>
+          {% else %}
+            <a href="{% url 'burnout:register' %}" class="btn btn-light btn-lg">Créer mon compte</a>
+            <a href="{% url 'burnout:login' %}" class="btn btn-outline-light btn-lg">Me connecter</a>
+          {% endif %}
+        </div>
+        <p class="hero-note mb-0">Quelques minutes suffisent. Vos réponses restent privées.</p>
+      </div>
+
+      <div class="col-lg-5">
+        <div class="sb-card hero-card" aria-hidden="true">
+          <span class="tag">Exemple de résultat</span>
+          <div class="gauge">
+            <svg viewBox="0 0 200 118">
+              <path class="track" d="M 20 100 A 80 80 0 0 1 180 100"/>
+              <path class="value niveau-modere-c" style="--score: 54" d="M 20 100 A 80 80 0 0 1 180 100"/>
+            </svg>
+            <div class="gauge-readout">
+              <div class="num">54<small>%</small></div>
+              <div class="cap">Score de risque indicatif</div>
+            </div>
+          </div>
+          <div class="text-center mt-3"><span class="badge-niveau badge-modere"><i class="bi bi-exclamation-triangle"></i> Risque modéré</span></div>
+          <div class="legend">
+            <span><i class="dot f"></i>Faible</span>
+            <span><i class="dot m"></i>Modéré</span>
+            <span><i class="dot e"></i>Élevé</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-4">
+        <h2>Ce que vous obtenez</h2>
+        <p class="intro">Une lecture claire de votre situation, pas un verdict. À vous d'en faire ce que vous voulez.</p>
+      </div>
+      <div class="col-lg-8">
+        <div class="feature-row">
+          <div class="feature-icon"><i class="bi bi-clipboard2-pulse"></i></div>
+          <div>
+            <h3>Un questionnaire court</h3>
+            <p>Dix questions sur votre état général, votre sommeil et votre équilibre de vie, notées de 1 à 5.</p>
+          </div>
+        </div>
+        <div class="feature-row">
+          <div class="feature-icon"><i class="bi bi-graph-up-arrow"></i></div>
+          <div>
+            <h3>Une estimation par apprentissage automatique</h3>
+            <p>Un modèle Random Forest combine vos réponses et votre charge de travail pour estimer un niveau faible, modéré ou élevé, et indique les facteurs qui pèsent le plus.</p>
+          </div>
+        </div>
+        <div class="feature-row">
+          <div class="feature-icon"><i class="bi bi-lightbulb"></i></div>
+          <div>
+            <h3>Des recommandations adaptées</h3>
+            <p>Des conseils généraux et prudents, choisis selon votre niveau de risque, pour mieux répartir votre travail et protéger votre repos.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-white">
+  <div class="container">
+    <h2>Comment ça fonctionne</h2>
+    <ol class="etapes">
+      <li>
+        <div class="n">1</div>
+        <h3>Créez votre profil</h3>
+        <p>Une inscription rapide, avec votre formation et votre université.</p>
+      </li>
+      <li>
+        <div class="n">2</div>
+        <h3>Répondez au questionnaire</h3>
+        <p>Décrivez votre ressenti, puis votre charge de travail actuelle.</p>
+      </li>
+      <li>
+        <div class="n">3</div>
+        <h3>Lisez votre estimation</h3>
+        <p>Votre niveau de risque et les indicateurs qui l'expliquent.</p>
+      </li>
+      <li>
+        <div class="n">4</div>
+        <h3>Suivez votre évolution</h3>
+        <p>Comparez vos résultats dans le temps depuis votre tableau de bord.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section class="section pb-0">
+  <div class="container">
+    <div class="notice">
+      <i class="bi bi-info-circle"></i>
+      <div>Cet outil fournit une estimation indicative. Il ne pose aucun diagnostic médical et ne remplace pas l'avis d'un professionnel de santé. En cas de détresse, parlez-en à un médecin ou à un service d'accompagnement de votre établissement.</div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
